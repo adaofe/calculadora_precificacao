@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora F.ada - Precificação</title>
+    <style>
+        body {
+            background-color: #F7D6E0;
+            font-family: 'Segoe UI', sans-serif;
+            color: #5C3B37;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 30px 20px 10px;
+        }
+        h1 {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+        h2 {
+            font-style: italic;
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+        .container {
+            background-color: #fff6f8;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        button {
+            background-color: #D5A6A1;
+            color: white;
+            padding: 12px;
+            border: none;
+            margin-top: 20px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .resultado {
+            margin-top: 20px;
+            font-weight: bold;
+            background-color: #fdeff1;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .sugestao {
+            font-size: 0.9em;
+            color: #a66;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>F.ada</h1>
+        <h2>Moda que abraça</h2>
+    </header>
+    <div class="container">
+        <label for="tipo">Tipo de peça:</label>
+        <select id="tipo">
+            <option value="propria">Peça própria</option>
+            <option value="colab">Colaboração</option>
+        </select>
+
+        <label for="mp">Custo de matéria-prima (R$):</label>
+        <input type="number" id="mp" placeholder="Ex: 25.00">
+
+        <label for="maoDeObra">Custo de mão de obra (R$):</label>
+        <input type="number" id="maoDeObra" placeholder="Clique para estimar" onclick="calcularSugestaoMaoDeObra()">
+
+        <label for="margem">Margem simbólica (%): <span class="sugestao">(Sugerido: 5%)</span></label>
+        <input type="number" id="margem" value="5">
+
+        <label for="repasse">Repasse para colaboração (%):</label>
+        <input type="number" id="repasse" value="0">
+
+        <button onclick="calcular()">Calcular valor final</button>
+        <div id="resultado" class="resultado" style="display:none;"></div>
+    </div>
+
+    <script>
+        function calcularSugestaoMaoDeObra() {
+            const horasMes = prompt("Quantas horas você pretende dedicar por mês?");
+            const ganhoMensal = prompt("Quanto gostaria de ganhar por mês?");
+            if (horasMes && ganhoMensal) {
+                const valorHora = parseFloat(ganhoMensal) / parseFloat(horasMes);
+                const estimativa = parseFloat(valorHora * 2).toFixed(2); // estimativa média por peça
+                document.getElementById("maoDeObra").value = estimativa;
+                alert("Estimativa de mão de obra por peça: R$ " + estimativa);
+            }
+        }
+
+        function calcular() {
+            const tipo = document.getElementById("tipo").value;
+            const mp = parseFloat(document.getElementById("mp").value || 0);
+            const maoDeObra = parseFloat(document.getElementById("maoDeObra").value || 0);
+            const margem = parseFloat(document.getElementById("margem").value || 0);
+            const repasse = tipo === "colab" ? parseFloat(document.getElementById("repasse").value || 0) : 0;
+
+            let custoBase = mp + maoDeObra;
+            let valorFinal = custoBase * (1 + margem / 100);
+            if (tipo === "colab") {
+                valorFinal *= (1 + repasse / 100);
+            }
+
+            document.getElementById("resultado").innerText =
+                "Valor sugerido para venda: R$ " + valorFinal.toFixed(2);
+            document.getElementById("resultado").style.display = "block";
+        }
+    </script>
+</body>
+</html>
