@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Precificação - F.ada</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: #fdf7f4 url('https://i.imgur.com/LPdmtxL.png') repeat;
+            color: #4b2e2e;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff6f0;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-family: 'Georgia', serif;
+            color: #9b5c5c;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #d3c1b0;
+        }
+        .resultado {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #804040;
+            background: #fff0e6;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        button {
+            background: #c99888;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #a97868;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Precificação - F.ada</h1>
+        <label for="tipo">Tipo de peça:</label>
+        <select id="tipo">
+            <option value="propria">Peça própria</option>
+            <option value="colab">Colaboração</option>
+        </select>
+
+        <label for="mp">Custo da matéria-prima (R$):</label>
+        <input type="number" id="mp" placeholder="Ex: 35.00">
+
+        <label for="maos">Quanto tempo (em horas) levou para produzir a peça?</label>
+        <input type="number" id="horas">
+
+        <label for="valorHora">Quanto você gostaria de receber por hora? (R$)</label>
+        <input type="number" id="valorHora">
+
+        <label for="margem">Margem simbólica/valor de criação (R$):</label>
+        <input type="number" id="margem" placeholder="Ex: 20.00">
+
+        <div id="repasse-container" style="display:none;">
+            <label for="repasse">Valor de repasse para o parceiro (R$):</label>
+            <input type="number" id="repasse">
+        </div>
+
+        <button onclick="calcular()">Calcular preço final</button>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('tipo').addEventListener('change', function() {
+            const repasse = document.getElementById('repasse-container');
+            if (this.value === 'colab') {
+                repasse.style.display = 'block';
+            } else {
+                repasse.style.display = 'none';
+            }
+        });
+
+        function calcular() {
+            const mp = parseFloat(document.getElementById('mp').value) || 0;
+            const horas = parseFloat(document.getElementById('horas').value) || 0;
+            const valorHora = parseFloat(document.getElementById('valorHora').value) || 0;
+            const maoDeObra = horas * valorHora;
+            const margem = parseFloat(document.getElementById('margem').value) || 0;
+            const tipo = document.getElementById('tipo').value;
+            const repasse = tipo === 'colab' ? parseFloat(document.getElementById('repasse').value) || 0 : 0;
+
+            const precoFinal = mp + maoDeObra + margem + repasse;
+            document.getElementById('resultado').innerHTML =
+                `Preço final sugerido: R$ ${precoFinal.toFixed(2)}<br>` +
+                `• Custo MP: R$ ${mp.toFixed(2)}<br>` +
+                `• Mão de obra (${horas}h x R$${valorHora.toFixed(2)}/h): R$ ${maoDeObra.toFixed(2)}<br>` +
+                `• Margem simbólica: R$ ${margem.toFixed(2)}<br>` +
+                (repasse ? `• Repasse parceria: R$ ${repasse.toFixed(2)}` : "");
+        }
+    </script>
+</body>
+</html>
